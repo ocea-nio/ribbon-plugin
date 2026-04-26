@@ -2,21 +2,22 @@ package io.github.oceanio.ribbonplugin.feature.tuning;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.util.Map;
 
 public class TuningListener implements Listener {
     private final JavaPlugin plugin;
     private final TuningService service;
+    private boolean crafting = false;
 
     public TuningListener(JavaPlugin plugin, TuningService service) {
         this.plugin = plugin;
@@ -42,34 +43,38 @@ public class TuningListener implements Listener {
         event.getInventory().setResult(result);
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void onCraft(CraftItemEvent event) {
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
 
-        CraftingInventory inv = event.getInventory();
+        if (!(event.getInventory() instanceof CraftingInventory inv)) return;
+
+        // 結果スロットだけ
+        if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
+
         TuningInput input = TuningInput.parse(plugin, inv);
         if (input == null) return;
 
+        event.setCancelled(true); // ←これで完全に止める
+
+        // 上限チェック
         if (input.targetItem().getEnchantments().size() >= 5) {
             player.sendMessage(ChatColor.RED + "このアイテムには既に5つのエンチャントが付いています！");
-            event.setCancelled(true);
             return;
         }
 
-        event.setCancelled(true); // バニラのクラフトをキャンセルして独自処理
-
-        // ランダムエンチャント決定
-        Map<Enchantment, Integer> enchants = service.rollEnchantment(input.targetItem());
+        // エンチャ付与
         ItemStack result = input.targetItem().clone();
+        var enchants = service.rollEnchantment(result);
+        enchants.forEach(result::addUnsafeEnchantment);
 
-        enchants.forEach((ench, lvl) -> result.addUnsafeEnchantment(ench, lvl));
-
-        // 素材消費とアイテム付与
+        // 素材消費
         service.consumeIngredients(inv);
+
+        // アイテム付与
         player.getInventory().addItem(result).values().forEach(drop ->
                 player.getWorld().dropItemNaturally(player.getLocation(), drop));
 
         player.playSound(player.getLocation(), Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
-        player.sendMessage(ChatColor.GREEN + "エンチャントが完了しました！");
     }
 }

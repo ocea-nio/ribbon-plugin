@@ -31,16 +31,16 @@ public class TuningService {
     }
 
     public void consumeIngredients(CraftingInventory inv) {
-        for (int i = 0; i < inv.getSize(); i++) {
+        for (int i = 0; i < inv.getMatrix().length; i++) {
             ItemStack item = inv.getItem(i);
             if (item == null || item.getType() == Material.AIR) continue;
 
-            // クラフト枠内の全アイテムを1個ずつ減らす
-            int amount = item.getAmount() - 1;
-            if (amount <= 0) {
+            int newAmount = item.getAmount() - 1;
+
+            if (newAmount <= 0) {
                 inv.setItem(i, null);
             } else {
-                item.setAmount(amount);
+                item.setAmount(newAmount);
             }
         }
     }
