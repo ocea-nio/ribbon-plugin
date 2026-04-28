@@ -7,20 +7,20 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class EnchantPool {
 
-    // Java 8-11でも動作するようにrecordではなくクラスで定義
     public static class EnchantEntry {
+
         private final Enchantment enchantment;
-        private final int level;
+        private final int maxLevel;
         private final int weight;
 
-        public EnchantEntry(Enchantment enchantment, int level, int weight) {
+        public EnchantEntry(Enchantment enchantment, int maxLevel, int weight) {
             this.enchantment = enchantment;
-            this.level = level;
+            this.maxLevel = maxLevel;
             this.weight = weight;
         }
 
         public Enchantment getEnchantment() { return enchantment; }
-        public int getLevel() { return level; }
+        public int getMaxLevel() { return maxLevel; }
         public int getWeight() { return weight; }
     }
 
@@ -28,30 +28,97 @@ public class EnchantPool {
     private int totalWeight = 0;
 
     public EnchantPool() {
-        // デフォルトのエンチャントリスト
-        addEntry(Enchantment.SHARPNESS, 5, 10);
-        addEntry(Enchantment.PROTECTION, 4, 20);
-        addEntry(Enchantment.EFFICIENCY, 5, 15);
-        addEntry(Enchantment.MENDING, 1, 5);
+
+        //===== 防具系 =====
+        addEntry(Enchantment.PROTECTION, 4, 5); // Protection
+        addEntry(Enchantment.FIRE_PROTECTION, 4, 5);          // Fire Protection
+        addEntry(Enchantment.FEATHER_FALLING, 4, 5);          // Feather Falling
+        addEntry(Enchantment.BLAST_PROTECTION, 4, 5);     // Blast Protection
+        addEntry(Enchantment.PROJECTILE_PROTECTION, 4, 5);     // Projectile Protection
+
+        // ===== ダメージ系 =====
+        addEntry(Enchantment.SHARPNESS, 5, 5);        // Sharpness
+        addEntry(Enchantment.SMITE, 5, 5);     // Smite
+        addEntry(Enchantment.BANE_OF_ARTHROPODS, 5, 5);  // Bane of Arthropods
+
+        // ===== ツール系 =====
+        addEntry(Enchantment.EFFICIENCY, 5, 5);         // Efficiency
+        addEntry(Enchantment.SILK_TOUCH, 1, 5);        // Silk Touch
+        addEntry(Enchantment.SILK_TOUCH, 3, 5); // Fortune
+
+        // ===== 武器系 =====
+        addEntry(Enchantment.KNOCKBACK, 2, 5);
+        addEntry(Enchantment.FIRE_ASPECT, 2, 5);
+        addEntry(Enchantment.LOOTING, 3, 5);   // Looting
+
+        // ===== 弓 =====
+        addEntry(Enchantment.POWER, 5, 5);      // Power
+        addEntry(Enchantment.PUNCH, 2, 5);   // Punch
+        addEntry(Enchantment.FLAME, 1, 5);        // Flame
+        addEntry(Enchantment.INFINITY, 1, 5);    // Infinity
+
+        // ===== 耐久・修復 =====
+        addEntry(Enchantment.UNBREAKING, 3, 5);        // Unbreaking
+        addEntry(Enchantment.MENDING, 1, 5);           // Mending
+
+        // ===== 釣り =====
+        addEntry(Enchantment.LUCK_OF_THE_SEA, 3, 5);              // Luck of the Sea
+        addEntry(Enchantment.LURE, 3, 5);              // Lure
+
+        // ===== トライデント系 =====
+        addEntry(Enchantment.IMPALING, 5, 5);
+        addEntry(Enchantment.LOYALTY, 3, 5);
+        addEntry(Enchantment.RIPTIDE, 3, 5);
+        addEntry(Enchantment.CHANNELING, 1, 5);
+
+        // ===== クロスボウ =====
+        addEntry(Enchantment.QUICK_CHARGE, 3, 5);
+        addEntry(Enchantment.PIERCING, 4, 5);
+        addEntry(Enchantment.MULTISHOT, 1, 5);
+
+        // ===== 呪い系 =====
+        addEntry(Enchantment.BINDING_CURSE, 1, 5);
+        addEntry(Enchantment.VANISHING_CURSE, 1, 5);
+
+        // ===== 防具特殊 =====
+        addEntry(Enchantment.THORNS, 3, 5);
+        addEntry(Enchantment.SOUL_SPEED, 3, 5);
     }
 
-    public void addEntry(Enchantment ench, int level, int weight) {
-        entries.add(new EnchantEntry(ench, level, weight));
+    public void addEntry(Enchantment ench, int maxLevel, int weight) {
+        entries.add(new EnchantEntry(ench, maxLevel, weight));
         totalWeight += weight;
     }
 
     public EnchantEntry getRandomEntry() {
-        if (entries.isEmpty() || totalWeight <= 0) return null;
+        if (entries.isEmpty()) return null;
 
-        int randomIndex = ThreadLocalRandom.current().nextInt(totalWeight);
-        int currentWeight = 0;
+        int roll = ThreadLocalRandom.current().nextInt(totalWeight);
+        int sum = 0;
 
-        for (EnchantEntry entry : entries) {
-            currentWeight += entry.getWeight();
-            if (randomIndex < currentWeight) {
-                return entry;
+        for (EnchantEntry e : entries) {
+            sum += e.getWeight();
+            if (roll < sum) {
+                return e;
             }
         }
+
         return entries.get(0);
     }
+
+    public int rollLevel(int maxLevel) {
+        int roll = ThreadLocalRandom.current().nextInt(100);
+
+        if (roll < 50) return 1;
+        if (roll < 80) return Math.min(2, maxLevel);
+        if (roll < 95) return Math.min(3, maxLevel);
+        if (roll < 99) return Math.min(4, maxLevel);
+        return maxLevel;
+    }
+
+    // これを追加
+    public List<EnchantEntry> getAllEntries() {
+        return entries;
+    }
 }
+

@@ -4,35 +4,41 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TuningService {
 
-    // ここで確実に初期化する
     private final EnchantPool pool = new EnchantPool();
 
     public Map<Enchantment, Integer> rollEnchantment(ItemStack item) {
+
         Map<Enchantment, Integer> result = new HashMap<>();
 
-        // 最大10回試行（アイテムに付与できないエンチャントが選ばれた時のため）
-        for (int i = 0; i < 10; i++) {
-            EnchantPool.EnchantEntry entry = pool.getRandomEntry();
-            if (entry == null) break;
+        List<EnchantPool.EnchantEntry> candidates = pool.getAllEntries().stream()
+                .filter(e -> e.getEnchantment().canEnchantItem(item))
+                .toList();
 
-            // そのアイテム（剣や防具など）に付与可能かチェック
-            if (entry.getEnchantment().canEnchantItem(item)) {
-                result.put(entry.getEnchantment(), entry.getLevel());
-                break;
-            }
-        }
+        if (candidates.isEmpty()) return result;
+
+        EnchantPool.EnchantEntry entry = candidates.get(
+                (int)(Math.random() * candidates.size())
+        );
+
+        int level = pool.rollLevel(entry.getMaxLevel());
+        result.put(entry.getEnchantment(), level);
 
         return result;
     }
 
     public void consumeIngredients(CraftingInventory inv) {
-        for (int i = 0; i < inv.getMatrix().length; i++) {
+
+        for (int i = 0; i < inv.getSize(); i++) {
+
             ItemStack item = inv.getItem(i);
+
             if (item == null || item.getType() == Material.AIR) continue;
 
             int newAmount = item.getAmount() - 1;
