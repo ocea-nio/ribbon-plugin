@@ -2,7 +2,7 @@ package io.github.oceanio.ribbonplugin.feature.tuning;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +21,7 @@ public class TuningListener implements Listener {
 
     private final JavaPlugin plugin;
     private final TuningService service;
+    private boolean crafting = false;
 
     public TuningListener(JavaPlugin plugin, TuningService service) {
         this.plugin = plugin;
@@ -64,6 +65,8 @@ public class TuningListener implements Listener {
         }
 
         ItemStack result = input.targetItem().clone();
+        var enchants = service.rollEnchantment(result);
+        enchants.forEach(result::addUnsafeEnchantment);
 
         var enchants = service.rollEnchantment(result);
         enchants.forEach(result::addUnsafeEnchantment);
