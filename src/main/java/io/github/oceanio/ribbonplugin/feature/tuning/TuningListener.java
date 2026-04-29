@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
@@ -15,7 +14,6 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Map;
 
 public class TuningListener implements Listener {
 
@@ -68,9 +66,6 @@ public class TuningListener implements Listener {
         var enchants = service.rollEnchantment(result);
         enchants.forEach(result::addUnsafeEnchantment);
 
-        var enchants = service.rollEnchantment(result);
-        enchants.forEach(result::addUnsafeEnchantment);
-
         service.consumeIngredients(inv);
 
         player.getInventory().addItem(result).values().forEach(drop ->
@@ -79,4 +74,4 @@ public class TuningListener implements Listener {
         player.playSound(player.getLocation(),
                 Sound.BLOCK_ENCHANTMENT_TABLE_USE, 1.0f, 1.0f);
     }
-    }
+}
