@@ -1,10 +1,7 @@
 package io.github.oceanio.ribbonplugin;
 
 import io.github.oceanio.ribbonplugin.core.FeatureManager;
-import io.github.oceanio.ribbonplugin.feature.banenchant.BanEnchantFeature;
-import io.github.oceanio.ribbonplugin.feature.banenchant.BanEnchantService;
-import io.github.oceanio.ribbonplugin.feature.tuning.TuningFeature;
-import io.github.oceanio.ribbonplugin.feature.tuning.TuningService;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
@@ -16,8 +13,7 @@ public final class Main extends JavaPlugin {
         featureManager = new FeatureManager(this);
 
         //ここでfeature登録
-        featureManager.register(new BanEnchantFeature(new BanEnchantService()));
-        featureManager.register(new TuningFeature(new TuningService()));
+
 
         //要素許可
         featureManager.enableAll();
