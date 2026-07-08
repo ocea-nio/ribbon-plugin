@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 import java.util.ArrayList;
 
-public class FixVillagerTradeCommand implements CommandExecutor {
+public class FixVillagerCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

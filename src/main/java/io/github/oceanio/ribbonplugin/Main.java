@@ -2,6 +2,9 @@ package io.github.oceanio.ribbonplugin;
 
 import io.github.oceanio.ribbonplugin.core.FeatureManager;
 
+import io.github.oceanio.ribbonplugin.feature.tracker.ToolTrackerFeature;
+import io.github.oceanio.ribbonplugin.feature.tracker.ToolTrackerService;
+import io.github.oceanio.ribbonplugin.feature.villagerfix.FixVillagerFeature;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
@@ -13,7 +16,8 @@ public final class Main extends JavaPlugin {
         featureManager = new FeatureManager(this);
 
         //ここでfeature登録
-
+        featureManager.register(new FixVillagerFeature());
+        featureManager.register(new ToolTrackerFeature(new ToolTrackerService()));
 
         //要素許可
         featureManager.enableAll();

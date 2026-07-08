@@ -7,11 +7,11 @@ import org.bukkit.event.entity.VillagerAcquireTradeEvent;
 import org.bukkit.inventory.MerchantRecipe;
 
 
-public class FixNewVillagerTrade implements Listener {
+public class FixVillagerListener implements Listener {
     @EventHandler
-    public void villagerEnchantedBooksDeleter(VillagerAcquireTradeEvent event) {
-        MerchantRecipe Recipe = event.getRecipe();
-        if (Recipe.getResult().getType() == Material.ENCHANTED_BOOK) {
+    public void onVillagerTrade(VillagerAcquireTradeEvent event) {
+        MerchantRecipe recipe = event.getRecipe();
+        if (recipe.getResult().getType() == Material.ENCHANTED_BOOK) {
             event.setCancelled(true);
         }
     }
