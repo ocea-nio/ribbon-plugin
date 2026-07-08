@@ -1,5 +1,6 @@
 package io.github.oceanio.ribbonplugin.feature.tracker;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,12 +36,14 @@ public class ToolTrackerService {
     );
 
     public boolean isTools (ItemStack item) {
-        return TOOLS.contains(item);
+        return TOOLS.contains(item.getType());
     }
 
     public void addUse(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (meta==null) return;
+        if (meta==null){
+            return;
+        }
 
         List<String> lore = meta.getLore();
         int uses = 0;

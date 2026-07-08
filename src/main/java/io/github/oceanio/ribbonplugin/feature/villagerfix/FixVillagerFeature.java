@@ -14,6 +14,9 @@ public class FixVillagerFeature implements Feature {
 
     @Override
     public void enable(JavaPlugin plugin) {
+        //インスタンス生成
+        listener = new FixVillagerListener();
+        command = new FixVillagerCommand();
 
         // イベント登録
         plugin.getServer().getPluginManager().registerEvents(listener, plugin);

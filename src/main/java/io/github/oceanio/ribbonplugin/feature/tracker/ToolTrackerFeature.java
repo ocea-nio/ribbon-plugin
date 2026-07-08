@@ -1,6 +1,7 @@
 package io.github.oceanio.ribbonplugin.feature.tracker;
 
 import io.github.oceanio.ribbonplugin.core.Feature;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ToolTrackerFeature implements Feature {
@@ -27,6 +28,8 @@ public class ToolTrackerFeature implements Feature {
 
     @Override
     public void disable() {
-
+        if (listener != null){
+            HandlerList.unregisterAll(listener);
+        }
     }
 }

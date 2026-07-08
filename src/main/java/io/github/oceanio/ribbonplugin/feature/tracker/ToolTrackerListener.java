@@ -1,5 +1,6 @@
 package io.github.oceanio.ribbonplugin.feature.tracker;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +19,9 @@ public final class ToolTrackerListener implements Listener {
     public void onBrokeBlock (BlockBreakEvent event) {
         Player p = event.getPlayer();
         ItemStack item = p.getInventory().getItemInMainHand();
-        if (!service.isTools(item)) return;
+        if (!service.isTools(item)) {
+            return;
+        }
         service.addUse(item);
     }
 }
