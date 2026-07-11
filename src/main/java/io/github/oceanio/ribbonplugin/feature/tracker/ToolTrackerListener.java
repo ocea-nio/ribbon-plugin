@@ -1,6 +1,7 @@
 package io.github.oceanio.ribbonplugin.feature.tracker;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +23,6 @@ public final class ToolTrackerListener implements Listener {
         if (!service.isTools(item)) {
             return;
         }
-        service.addUse(item);
+        service.addLore(item);
     }
 }

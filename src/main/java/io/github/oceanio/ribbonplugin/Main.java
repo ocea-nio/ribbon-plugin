@@ -19,7 +19,7 @@ public final class Main extends JavaPlugin {
         //ここでfeature登録
         featureManager.register(new FixVillagerFeature());
         featureManager.register((new antiEndermanFeature()));
-        featureManager.register(new ToolTrackerFeature(new ToolTrackerService()));
+        featureManager.register(new ToolTrackerFeature(new ToolTrackerService(this)));
 
         //要素許可
         featureManager.enableAll();
