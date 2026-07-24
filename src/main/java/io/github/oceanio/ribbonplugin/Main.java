@@ -3,6 +3,7 @@ package io.github.oceanio.ribbonplugin;
 import io.github.oceanio.ribbonplugin.core.FeatureManager;
 
 import io.github.oceanio.ribbonplugin.feature.antiEnderman.antiEndermanFeature;
+import io.github.oceanio.ribbonplugin.feature.elytraCancel.elytraCancelFeature;
 import io.github.oceanio.ribbonplugin.feature.tracker.ToolTrackerFeature;
 import io.github.oceanio.ribbonplugin.feature.tracker.ToolTrackerService;
 import io.github.oceanio.ribbonplugin.feature.villagerfix.FixVillagerFeature;
@@ -19,6 +20,7 @@ public final class Main extends JavaPlugin {
         //ここでfeature登録
         featureManager.register(new FixVillagerFeature());
         featureManager.register((new antiEndermanFeature()));
+        featureManager.register(new elytraCancelFeature());
         featureManager.register(new ToolTrackerFeature(new ToolTrackerService(this)));
 
         //要素許可
